@@ -1,0 +1,71 @@
+\documentclass{article}
+\begin{document}
+
+\section{Definitions and preliminaries: (10--15~min.)}
+
+\begin{itemize}
+\item Finite State Automaton (FSA)
+  \begin{itemize}
+    \item definition
+    \item main applications
+  \end{itemize}
+\item Weighted Finite State Automaton (WFSA)
+  \begin{itemize}
+    \item definition
+  \end{itemize}
+\item Finite State Transduser (FST)
+  \begin{itemize}
+    \item definition
+  \end{itemize}
+\item Weighted Finite State Transducer (WFST)
+  \begin{itemize}
+    \item definition
+    \item advantages over WFSA
+      \begin{itemize}
+        \item composability
+        \item invertibility
+      \end{itemize}
+    \item equivalence
+  \end{itemize}
+\item Digression: Semirings
+  \begin{itemize}
+    \item definitions
+    \item examples
+  \end{itemize}
+\end{itemize}
+
+\section{Basic component WFSTs used in speech recognition (7--10~min.)}
+
+\begin{itemize}
+  \item Acoustic model
+  \item Lexicon
+  \item Grammar
+\end{itemize}
+
+\section{WFST production algorithms (20-25~min.)}
+
+\begin{itemize}
+  \item Composition
+    \begin{itemize}
+      \item The case without empty transitions
+      \item The case with empty transitions (including the problematoc filter FST)
+    \end{itemize}
+  \item Determinization
+    \begin{itemize}
+      \item Algorithm for an WFSA
+      \item Applicability (what happens to a WFST?)
+    \end{itemize}
+  \item Minimization
+    \begin{itemize}
+      \item Weight pushing. Problems with computing potentials.
+      \item Minimization itself
+    \end{itemize}
+\end{itemize}
+
+\section{WFST use algorithms (10-15~min.)}
+
+\begin{itemize}
+  \item Viterbi
+\end{itemize}
+
+\end{document}
