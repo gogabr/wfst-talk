@@ -5,7 +5,7 @@
 \renewcommand{\>}{\rangle}
 
 \title{Weighted Finite State Transducers}
-\author{Ilia Edrenkin and Georgy Bronnikov}
+\author{Ilya Edrenkin and Georgy Bronnikov}
 \date{October 24, 2012}
 
 \begin{document}
@@ -47,8 +47,102 @@
   \end{itemize}
 \end{frame}
 
-\section{Basic component WFSTs used in speech recognition (7--10~min.)}
+\subsection{Finite State Automata}
+\begin{frame}
+  \frametitle{Finite State Automata: Definition}
 
+Finite-State Automaton (Machine) is an abstract model of computation. FSA is defined by the following elements:
+
+      \begin{itemize}
+      \item $\textit{Q}$ - finite set of states
+      \item $\textit{I}\subseteq\textit{Q}$ - set of initial states
+      \item $\textit{F}\subseteq\textit{Q}$ - set of final states
+      \item $\textit{E}$ - finite set of pairwise oriented transitions between the states
+      \item $\textit{A}$ - input alphabet
+      \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Finite State Automata: State Diagram}
+
+Hence, FSA can be naturally represented as an oriented graph. FSA is said to \textit{accept} an input string if the transitions corresponding to this string form the path from initial to final states.
+\begin{center}
+\includegraphics[width=6cm]{fsa-regexp-1.png}\\
+\end{center}
+This automaton accepts strings that match to the regular expression a(b*)c(d$\mid$e). The final states 4 and 5 are marked with a double circle.
+\end{frame}
+\begin{frame}
+  \frametitle{Weighted Finite State Automata}
+
+Let's assume that transitions might be different, say, more or less difficult to go through. This introduces the concept of weights.
+\begin{center}
+\includegraphics[width=6cm]{fsa-weights-2.png}\\
+(input labels omitted)
+\end{center}
+This automaton is \textit{weighted}. Each transition is associated with a number, which can represent its probability, desirability, cost, etc.
+\end{frame}
+\begin{frame}
+  \frametitle{Finite State Automata: Determinism}
+
+FSA is said to be deterministic, if for each state there are no two output edges with the same label.
+\begin{center}
+\includegraphics[width=6cm]{fsa-determination-3.png}\\
+\end{center}
+This automaton is \textit{non-deterministic}. State 0 has two output edges labeled with $a$.\\
+\textbf{Claim}: each non-deterministic unweighted automaton can be efficiently determinized.
+\end{frame}
+\begin{frame}
+  \frametitle{Finite State Transducers: Definition}
+
+A \textit{Finite-State Transducer} (FST) is basically a FSA with an output string.
+\begin{center}
+\includegraphics[width=6cm]{fst-example-4.png}\\
+This FST simply outputs the uppercase version of the input string.
+\end{center}
+Output labels of FST are defined over the alphabet $B$.
+\end{frame}
+\begin{frame}
+  \frametitle{Weighted Finite State Transducers}
+\begin{itemize}
+\item A Weighted Finite-State Transducer (WFST) is a FST with weighted edges.
+\item It can be either deterministic or not.
+\item Two WFSTs are said to be \textit{equivalent} if they associate the same output string and total weight to each input string.
+\item WFST is said to be \textit{minimal} if there is no equivalent WFST with a smaller number of states.
+\end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Weighted Finite State Transducers}
+\begin{itemize}
+\item A Weighted Finite-State Transducer (WFST) is a FST with weighted edges.
+\item It can be either deterministic or not.
+\item Two WFSTs are said to be \textit{equivalent} if they associate the same output string and total weight to each input string.
+\item WFST is said to be \textit{minimal} if there is no equivalent WFST with a smaller number of states.
+\item WFSTs can be determinized, minimized, and composed with each other.
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Semirings}
+The weights of WFST are determined over a \textit{semiring}.\\
+A semiring is a set R equipped with two binary operations - summation $\oplus$ and multiplication $\otimes$, such that:
+\begin{itemize}
+\item Summation is commutative monoid and has identity 0;
+\item Multiplication is monoid and has identity 1;
+\item Multiplication distributes over summation: a$\otimes$(b $\oplus$ c) = (a$\otimes$b) $\oplus$ (a$\otimes$c)
+\item Multiplication by 0 annihilates R: 0$\otimes$a = a$\otimes$0 = 0
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Semiring examples}
+Given this definition, different semirings can be considered.
+\begin{center}
+\includegraphics[width=6cm]{semiring-example-5.png}\\
+\end{center}
+Semirings are convenient for various dynamic programming approaches.
+\end{frame}
+
+
+
+
+\section{Basic component WFSTs used in speech recognition (7--10~min.)}
 \begin{frame}
   \begin{itemize}
   \item Acoustic model
@@ -132,11 +226,42 @@ $$
   \item Minimization itself
   \end{itemize}
 \end{frame}
+
+
+
+
+
+
 \section{WFST use algorithms (10-15~min.)}
 
 \begin{frame}
-  \begin{itemize}
-  \item Viterbi
+  \frametitle{Dynamic programming}
+  Conveyor problem: find the shortest way to finish an assembly, given two different assembly lines and transitions between them. 
+  \begin{center}
+\includegraphics[width=6cm]{fsa-weights-2.png}\\
+The weights represent assembly times.
+\end{center}
+This problem is easily solved with min-sum approach.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Viterbi}
+  Suppose we have a fully specified HMM with known transition and emission probabilities. How do we recover the most probable sequence of hidden model states given the output?
+    \begin{itemize}
+  \item For each time frame we have the same N states.
+  \item For each state we have constant emission probabilities for each symbol.
+  \item We also have constant transition probabilities from state to state between the adjacent time frames.
+  \end{itemize}
+So we can build such a conveyor, where states are "assembly lines", transition probabilities are assigned to the edges, and emission probabilities are located in vertices.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Viterbi Max-Sum}
+      \begin{itemize}
+\item The probability of a particular path is simply a multiplication of the corresponding transition and emission probabilities through the automaton (or summation, if logprobs are used).
+\item We simply use max-sum approach to determine the most probable sequence of model states that generated the observed output.
+\item More accurate estimations of probabilities of each state at each time frame can be obtained by Forward-Backward (or Belief Propagation) algorithms, that are quite similar in the approach.
+\item Viterbi beam search and other modifications are used to improve the efficiency of the algorithm, although this does not guarantee optimal decisions.
   \end{itemize}
 \end{frame}
 
